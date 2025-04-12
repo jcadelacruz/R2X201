@@ -272,6 +272,7 @@ vector<string> obtainStep(ifstream &file, int stepCount){
     return step;
 }
 void runPresetPerStep(vector<SearchTerm> keys, int &wCount, int &maxLCount, string *keyStore, ifstream &file){
+	cout << "running runPresetPerStep";
     int lCount;
     wCount = keys.size() +1;
     string line;
@@ -281,15 +282,23 @@ void runPresetPerStep(vector<SearchTerm> keys, int &wCount, int &maxLCount, stri
     file.seekg(0);
     // for each step
     for(int s=0; s<MAX_LENGTH; s++){
+	    cout << "\nstep " << s+1;
         maxLCount = s+1;
         vector<string> step = obtainStep(file, s+1); //obtain step at s+1
         if(step.empty()) continue;
+	    else cout << " found  ";
         for(int i=0; i<keys.size(); i++){
             line = "notFound";
             line = searchKey(step, keys[i].keyword);
             
-            if(line!="notFound"){ store[i][s] = editLine(line, keys[i].edits);}
-            else{ store[i][s] = "zarj";}
+            if(line!="notFound"){
+			store[i][s] = editLine(line, keys[i].edits);
+			    cout << "i";
+		    }
+	            else{
+			store[i][s] = "zarj";
+			    cout << "x";
+		    }
         }
         
         //max break
@@ -355,7 +364,7 @@ int main() {
     attemptSaveResultsToFile(keyStore, wCount, maxLCount);
     
     cout << "End program [enter any key]";
-    cin >> response;
+    cin >> key;
 
     return 0;
 }
