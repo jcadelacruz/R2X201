@@ -15,6 +15,7 @@ string store[MAX_WIDTH][MAX_LENGTH];
 
 string TRIGGER = "Batch simulation #	1	step	";
 string TRIGGER_RED = "Batch simulation #";
+string COUNTER_TRIGGER = "	of	2304";
 
 const int UNO = 143, DOS=385;
 class SearchTerm {
@@ -237,8 +238,8 @@ void attemptSaveResultsToFile(string keyStore[], int wCount, int maxLCount) {
 
 //presets
 vector<string> obtainStep(ifstream &file, int stepCount){
-    int edit = TRIGGER.size();
-    string edits[] = {"0", to_string(edit),"9"};
+    int left = TRIGGER.size(), right = COUNTER_TRIGGER.size();
+    string edits[] = {"0", to_string(edit), to_string(right)};
     string trigger = TRIGGER_RED;
     
     vector<string> step;
@@ -266,8 +267,8 @@ vector<string> obtainStep(ifstream &file, int stepCount){
     }
     
     // Reset the file stream for the next call
+	file.clear();
     file.seekg(lastPosition);
-    file.seekg(-10000, ios::cur); 
     
     return step;
 }
@@ -281,7 +282,7 @@ void runPresetPerStep(vector<SearchTerm> keys, int &wCount, int &maxLCount, stri
     for(int j=0; j<keys.size(); j++){ keyStore[j] = keys.at(j).name;}
     file.seekg(0);
     // for each step
-    for(int s=0; s<MAX_LENGTH; s++){
+    for(int s=0; s<MAX_LENGTH/2; s++){
 	    cout << "\nstep " << s+1;
         maxLCount = s+1;
         vector<string> step = obtainStep(file, s+1); //obtain step at s+1
@@ -292,19 +293,19 @@ void runPresetPerStep(vector<SearchTerm> keys, int &wCount, int &maxLCount, stri
             line = searchKey(step, keys[i].keyword);
             
             if(line!="notFound"){
-			store[i][s] = editLine(line, keys[i].edits);
-			    cout << i;
-		    }
-	            else{
-			store[i][s] = "zarj";
-			    cout << "x";
-		    }
+		store[i][s] = editLine(line, keys[i].edits);
+			cout << i;
+		}
+	    else{
+		store[i][s] = "zarj";
+		    cout << "x";
+	    }
         }
         
         //max break
         if(s>2503){
         	cout << "LKIT";
-            break;
+        	break;
         }
     }
 }
@@ -343,6 +344,7 @@ void runPreset(SearchTerm keys[], int keysize, int &wCount, int &maxLCount, std:
     vector<SearchTerm> scapsKeys2 = {defFile, affinity, hole, ff, eta};
     vector<SearchTerm> scapsKeys3 = {defFile, affinity, hole, vmpp, jmpp};
     vector<SearchTerm> scapsKeysRes = {defFile, affinity, hole, voc, jsc,ff, eta};
+    vector<SearchTerm> scapsKeysRes2 = {defFile, affinity, hole, voc2, jsc2,ff2, eta2};
     vector<SearchTerm> scapsKeysFull = {defFile, affinity, hole, voc, jsc,ff, eta, vmpp, jmpp};
     vector<SearchTerm> scapsKeysFull2 = {defFile, affinity, hole, voc2, jsc2,ff2, eta2, vmpp2, jmpp2};
     vector<SearchTerm> scapsKeys2nd = {ff, eta, vmpp, jmpp};
