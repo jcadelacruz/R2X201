@@ -1,2 +1,3 @@
 # R2X201
-reader
+
+repository contains reader cpp file to read SCAPS .iv output files
