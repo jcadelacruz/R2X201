@@ -7,7 +7,7 @@
 using namespace std;
 
 const int MAX_WIDTH = 10; //Maximum number of arrays to store
-const int MAX_LENGTH = 4000; // Maximum number of lines to store
+const int MAX_LENGTH = 5000; // Maximum number of lines to store
 const int EDIT_LENGTH = 4;
 const int MAX_PREV_LINE_SIZE = MAX_LENGTH;
 const double RULER_MULT = 2;
@@ -134,6 +134,35 @@ void setStringEdits(string str, string edits[]){
         cin >> edits[2];
     }
 }
+int countNonNumericFromRight(const std::string& str) {
+    int count = 0;
+
+    // Start from the end of the string and move backwards
+    for (int i = str.length() - 1; i >= 0; --i) {
+        if (!std::isdigit(str[i])) { // Check if the character is not a digit
+            count++;
+        } else {
+            break; // Stop counting when a numerical character is encountered
+        }
+    }
+
+    return count;
+}
+int countNonNumericFromRight(const std::string& str, bool placeholder) {
+    int count = 0;
+    placeholder = false;
+    // Start from the end of the string and move backwards
+    for (int i = str.length() - 1; i >= 0; --i) {
+        if (!std::isdigit(str[i])) { // Check if the character is not a digit
+            count++;
+        } else {
+            if(placeholder) break; // Stop counting when a numerical character is encountered
+            else placeholder = true;
+        }
+    }
+
+    return count;
+}
 string editLine(string line, string edits[]){
     try {
         // Trim characters from the left
@@ -147,7 +176,10 @@ string editLine(string line, string edits[]){
         line = line.substr(leftTrim); // Trim from the left
 
         // Trim characters from the right
-        int rightTrim = stoi(edits[2]);
+        int rightTrim;
+        if(stoi(edits[2])==7){ rightTrim = countNonNumericFromRight(line);}
+        else if(stoi(edits[2])==14){ rightTrim = countNonNumericFromRight(line);}//skip first digit
+        else{ rightTrim = stoi(edits[2]);}
         if (rightTrim < 0) {
             rightTrim = 0; // Ensure we don't trim a negative number
         }
@@ -402,15 +434,15 @@ void runPreset(SearchTerm keys[], int keysize, int &wCount, int &maxLCount, std:
     }
 }
     //scaps SearchTerms
-    SearchTerm defFile("file:", 0, 17,0);
-    SearchTerm affinity("affinity", 0, 38,0);
-    SearchTerm hole("hole", 0, 38,0);
-    SearchTerm voc("Voc", 0, 9,5);
-    SearchTerm jsc("Jsc", 0, 9,7);
-    SearchTerm ff("ff","eta", 1, 8,2);
-    SearchTerm eta("eta", 0, 9,2);
-    SearchTerm vmpp("V_MPP", 0, 11,5);
-    SearchTerm jmpp("J_MPP", 0, 10,7);
+    SearchTerm defFile("file:", 0, 17,1);
+    SearchTerm affinity("affinity", 0, 38,7);
+    SearchTerm hole("hole", 0, 38,7);
+    SearchTerm voc("Voc", 0, 9,7);
+    SearchTerm jsc("Jsc", 0, 9,14);
+    SearchTerm ff("ff","eta", 1, 8,7);
+    SearchTerm eta("eta", 0, 9,7);
+    SearchTerm vmpp("V_MPP", 0, 11,7);
+    SearchTerm jmpp("J_MPP", 0, 10,14);
     
     SearchTerm scapsKeys0[2]= {defFile, affinity};
     SearchTerm scapsKeys1[5]= {defFile, affinity, hole, voc, jsc};
