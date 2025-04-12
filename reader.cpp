@@ -239,7 +239,7 @@ void attemptSaveResultsToFile(string keyStore[], int wCount, int maxLCount) {
 //presets
 vector<string> obtainStep(ifstream &file, int stepCount){
     int left = TRIGGER.size(), right = COUNTER_TRIGGER.size();
-    string edits[] = {"0", to_string(edit), to_string(right)};
+    string edits[] = {"0", to_string(left), to_string(right)};
     string trigger = TRIGGER_RED;
     
     vector<string> step;
@@ -251,14 +251,24 @@ vector<string> obtainStep(ifstream &file, int stepCount){
     int q = 0;
     while (getline(file, line)) {
         if(line.find(trigger) != string::npos){
-            if(withinStep){ break;}
+            //cout << endl << " line found : ";
+            if(withinStep){
+            	 //cout << "break";
+            	 break;
+            }
             
             line = editLine(line, edits);
+            //cout << line;
             
             if(stoi(line) == stepCount){ 
             	withinStep = true;
             	lastPosition = file.tellg();
             	//if(stepCount%100==1) cout << line << "v" << stepCount << endl;
+            }
+            else if(stoi(line) > stepCount){
+            	file.seekg(-10000, ios::cur);
+            	lastPosition = file.tellg();
+            	break;
             }
         }
         if(withinStep){
@@ -282,7 +292,7 @@ void runPresetPerStep(vector<SearchTerm> keys, int &wCount, int &maxLCount, stri
     for(int j=0; j<keys.size(); j++){ keyStore[j] = keys.at(j).name;}
     file.seekg(0);
     // for each step
-    for(int s=0; s<MAX_LENGTH/2; s++){
+    for(int s=0; s<2304; s++){
 	    cout << "\nstep " << s+1;
         maxLCount = s+1;
         vector<string> step = obtainStep(file, s+1); //obtain step at s+1
