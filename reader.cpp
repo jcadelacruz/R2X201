@@ -13,7 +13,7 @@ const int MAX_PREV_LINE_SIZE = MAX_LENGTH;
 const double RULER_MULT = 2;
 string store[MAX_WIDTH][MAX_LENGTH];
 
-string TRIGGER = "Batch simulation # 1 step ";
+string TRIGGER = "Batch simulation #	1	step	";
 string TRIGGER_RED = "Batch simulation #";
 
 const int UNO = 143, DOS=385;
@@ -293,7 +293,7 @@ void runPresetPerStep(vector<SearchTerm> keys, int &wCount, int &maxLCount, stri
             
             if(line!="notFound"){
 			store[i][s] = editLine(line, keys[i].edits);
-			    cout << "i";
+			    cout << i;
 		    }
 	            else{
 			store[i][s] = "zarj";
@@ -302,11 +302,10 @@ void runPresetPerStep(vector<SearchTerm> keys, int &wCount, int &maxLCount, stri
         }
         
         //max break
-        if(s == 2503){
+        if(s>2503){
         	cout << "LKIT";
             break;
         }
-        if(s==2503) break;
     }
 }
 void runPreset(SearchTerm keys[], int keysize, int &wCount, int &maxLCount, std::string *keyStore, ifstream &file){//not fixed
