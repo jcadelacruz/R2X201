@@ -136,8 +136,8 @@ string editLine(string line, string edits[]){
 
         // Trim characters from the right
         int rightTrim = stoi(edits[2]);
-            if(stoi(edits[2])==UNO){ rightTrim = countNonNumericFromRight(line);}//presets
-            else if(stoi(edits[2])==DOS){ rightTrim = countNonNumericFromRight(line, false);}//skip first digit
+            if(stoi(edits[2])==UNO){ rightTrim = countNonNumericFromRight(line, false);}//presets
+            else if(stoi(edits[2])==DOS){ rightTrim = countNonNumericFromRight(line, true);}//skip first digit
         if (rightTrim < 0) { rightTrim = 0; cout << "rightTrim < 0";}
         line = line.substr(0, line.length() - rightTrim); // Trim from right
 
@@ -223,14 +223,14 @@ void attemptSaveResultsToFile(string keyStore[], int wCount, int maxLCount) {
 
     if (isResponseYes(response)) {
         cout << "\n Provide desired filename: ";
-        cin >> filename;
+        cin >> fileName;
         ofstream outFile(fileName);
         
         if (outFile.is_open()) {
             tabularSave(outFile, wCount, maxLCount, keyStore);
             
             outFile.close();
-            cout << "\nResults saved to " << filename << endl;
+            cout << "\nResults saved to " << fileName << endl;
         } else { cerr << "Error opening file for writing." << endl;}
     } else { cout << "Results will not be saved." << endl;}
 }
@@ -239,7 +239,7 @@ void attemptSaveResultsToFile(string keyStore[], int wCount, int maxLCount) {
 vector<string> obtainStep(ifstream &file, int stepCount){
     int edit = TRIGGER.size();
     string edits[] = {"0", to_string(edit),"9"};
-    trigger = TRIGGER_RED;
+    string trigger = TRIGGER_RED;
     
     vector<string> step;
     string line;
@@ -284,7 +284,7 @@ void runPresetPerStep(vector<SearchTerm> keys, int &wCount, int &maxLCount, stri
         maxLCount = s+1;
         vector<string> step = obtainStep(file, s+1); //obtain step at s+1
         if(step.empty()) continue;
-        for(int i=0; i<keysize; i++){
+        for(int i=0; i<keys.size(); i++){
             line = "notFound";
             line = searchKey(step, keys[i].keyword);
             
@@ -300,13 +300,13 @@ void runPresetPerStep(vector<SearchTerm> keys, int &wCount, int &maxLCount, stri
         if(s==2503) break;
     }
 }
-void runPreset(SearchTerm keys[], int keysize, int &wCount, int &maxLCount, std::string *keyStore, ifstream &file){//the real one
+void runPreset(SearchTerm keys[], int keysize, int &wCount, int &maxLCount, std::string *keyStore, ifstream &file){//not fixed
     int lCount;
     wCount--;
     for(int i=0; i<keysize; i++){
         wCount++;
         cout <<" ["<< i+1 <<"/"<< keysize <<"] checking '" << keys[i].name << "' offset " << keys[i].offset << endl;
-        lCount = searchAndStoreAndFindMaxLCount(file, keys[i].keyword, wCount, 0, keys[i].offset, keys[i].edits);
+        //lCount = searchAndStoreAndFindMaxLCount(file, keys[i].keyword, wCount, 0, keys[i].offset, keys[i].edits);
         if(lCount>maxLCount) maxLCount = lCount;
         keyStore[wCount] = keys[i].name;
     }
@@ -352,7 +352,7 @@ int main() {
     
     file.close();
 
-    attemptSaveResultsToFile("table of results", keyStore, wCount, maxLCount);
+    attemptSaveResultsToFile(keyStore, wCount, maxLCount);
     
     cout << "End program [enter any key]";
     cin >> response;
