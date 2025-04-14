@@ -332,6 +332,7 @@ void runPreset(SearchTerm keys[], int keysize, int &wCount, int &maxLCount, std:
 }
     //scaps SearchTerms
     SearchTerm defFile("file:", 0, 17,1);
+    SearchTerm thickness("thickness", 0, 29,0);
     SearchTerm affinity("affinity", 0, 38,UNO);
     SearchTerm hole("hole", 0, 38,UNO);
     
@@ -358,6 +359,7 @@ void runPreset(SearchTerm keys[], int keysize, int &wCount, int &maxLCount, std:
     vector<SearchTerm> scapsKeysFull = {defFile, affinity, hole, voc, jsc,ff, eta, vmpp, jmpp};
     vector<SearchTerm> scapsKeysFull2 = {defFile, affinity, hole, voc2, jsc2,ff2, eta2, vmpp2, jmpp2};
     vector<SearchTerm> scapsKeys2nd = {ff, eta, vmpp, jmpp};
+	vector<SearchTerm> scapsKeysThickness = {defFile, thickness, voc2, jsc2,ff2, eta2, vmpp2, jmpp2};
 
 int main() {
     ifstream file = getFile();
@@ -366,9 +368,17 @@ int main() {
     string line;
     int wCount = 0,maxLCount=1;
     bool reading = true;
+
+	char response = 'y';
     
-    cout << endl << "Preset SCAPS search";
-    runPresetPerStep(scapsKeysFull2, wCount, maxLCount, keyStore, file);
+    cout << endl << "Preset SCAPS search.";
+	cout << endl << " Setting: Thickness = n; Affinity, Mobility = y";
+	cin >> response;
+	if(isResponseYes(response)){
+		runPresetPerStep(scapsKeysFull2, wCount, maxLCount, keyStore, file);
+	}else{
+		runPresetPerStep(scapsKeysThickness, wCount, maxLCount, keyStore, file);
+	}
     
     file.close();
 
